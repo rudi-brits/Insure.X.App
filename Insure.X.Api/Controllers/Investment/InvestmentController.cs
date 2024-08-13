@@ -13,11 +13,11 @@ public class InvestmentController : InsureXController
         _investmentService = investmentService;
     }
 
-    [HttpGet("{clientId:int}")]
+    [HttpGet("{Id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetInvestmentForecastsByClientId(int clientId)
+    public IActionResult GetInvestmentForecastsByClientId(int Id)
     {
-        var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(clientId);
+        var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(Id);
         return Ok(investmentForecasts);
     }
 

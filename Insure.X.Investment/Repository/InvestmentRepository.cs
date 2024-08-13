@@ -11,6 +11,11 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     public InvestmentRepository(InsureXDatabase insureXDatabase)
         : base(insureXDatabase)
     {
+        SetFilterFields(new[]
+        {
+            nameof(InvestmentForecastDto.Firstname),
+            nameof(InvestmentForecastDto.Surname)
+        });
     }
 
     public List<InvestmentForecastDto>? GetInvestmentForecastsByClientId(int clientId)
@@ -21,9 +26,8 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
 
     public List<InvestmentForecastDto> GetInvestmentForecasts(string? searchTerm)
         => GetInvestmentForecastQueryable()
-            .SearchByTermContainsOrElse(searchTerm,
-                forecast => forecast.Firstname,
-                forecast => forecast.Surname)
+            .FilterByParams(
+                searchTerm, _filterFields!)
             .OrderBy(forecast => forecast.Firstname)
             .ThenByDescending(forecast => forecast.StartDate)
             .ToList();

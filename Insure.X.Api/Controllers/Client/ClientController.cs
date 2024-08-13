@@ -1,5 +1,7 @@
 ﻿using Insure.X.Api.Controllers.Base;
 using Insure.X.Client.Interfaces;
+using Insure.X.Client.Models;
+using Insure.X.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Insure.X.Api.Controllers.Client;
@@ -14,7 +16,7 @@ public class ClientController : InsureXController
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ClientDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetClientById(int id)
     {
@@ -26,10 +28,10 @@ public class ClientController : InsureXController
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetClients([FromQuery] string? searchTerm)
-    {
-        var clients = _clientService.GetClients(searchTerm);
-        return Ok(clients);
+    [ProducesResponseType(typeof(PagedResultDto<List<ClientDto>>), StatusCodes.Status200OK)]
+    public IActionResult GetClients([FromQuery] GridQueryParamsDto queryParams)
+    {        
+        var pagedResult = _clientService.GetClients(queryParams);
+        return Ok(pagedResult);
     }
 }

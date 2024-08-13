@@ -1,41 +1,59 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq.Dynamic.Core;
 
 namespace Insure.X.Domain.Extensions;
 
 public static class IQueryableExtensions
 {
-    public static IQueryable<T> SearchByTermContainsOrElse<T>(this IQueryable<T> source, 
-        string? searchTerm, 
-        params Expression<Func<T, string>>[] properties)
+    public static IQueryable<T> FilterByParams<T>(this IQueryable<T> source, 
+        string? searchTerm,
+        string[] propertyNames)
     {
-        if (string.IsNullOrEmpty(searchTerm) || properties?.Any() != true)
-            return source;
-
-        var parameter = Expression.Parameter(typeof(T), "e");
-        Expression? combinedExpression = null;
-
-        searchTerm = searchTerm.ToLower();
-
-        foreach (var property in properties)
+        try
         {
-            var propertyExpression = Expression.Invoke(property, parameter);
+            if (string.IsNullOrEmpty(searchTerm) || propertyNames?.Any() != true)
+                return source;
 
-            var toLowerMethod           = typeof(string).GetMethod("ToLower", Type.EmptyTypes);
-            var lowerPropertyExpression = Expression.Call(propertyExpression, toLowerMethod!);
-            var searchTermExpression    = Expression.Constant(searchTerm);
+            var filters = propertyNames
+                .Select(p => $"{p}.ToLower().Contains(@0)")
+                .ToArray();
 
-            var containsMethod     = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-            var containsExpression = Expression.Call(lowerPropertyExpression, containsMethod!, searchTermExpression);
+            var combinedFilter = string.Join(" || ", filters);
 
-            combinedExpression = combinedExpression == null
-                ? containsExpression
-                : Expression.OrElse(combinedExpression, containsExpression);
+            return source.Where(combinedFilter, searchTerm);
+        }
+        catch(Exception exc)
+        {
+            Console.WriteLine($"{nameof(FilterByParams)}-{exc.Message}");
         }
 
-        if (combinedExpression == null)
+        return source;
+    }
+
+    public static IQueryable<T> OrderByParams<T>(this IQueryable<T> source,
+        string? sortField,
+        string? sortOrder)
+    {
+        if (string.IsNullOrEmpty(sortField))
             return source;
 
-        var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
-        return source.Where(lambda);
+        sortField = char.ToUpper(sortField[0]) + sortField.Substring(1);
+        sortOrder = (sortOrder ?? string.Empty).ToLower();
+
+        string sortingExpression = 
+            $"{sortField} {(sortOrder == "asc" ? "ascending" : "descending")}";
+
+        return DynamicQueryableExtensions.OrderBy(source, sortingExpression);
+    }
+
+    public static IQueryable<T> PageByParams<T>(this IQueryable<T> source,
+        int pageNumber,
+        int pageSize)
+    {
+        pageNumber = pageNumber > 0 ? pageNumber : 1;
+        pageSize   = pageSize > 0 ? pageSize : 10;
+
+        return source
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize);
     }
 }
