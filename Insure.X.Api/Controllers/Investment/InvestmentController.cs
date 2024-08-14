@@ -1,4 +1,5 @@
 ﻿using Insure.X.Api.Controllers.Base;
+using Insure.X.Domain.Models;
 using Insure.X.Investment.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,19 +14,27 @@ public class InvestmentController : InsureXController
         _investmentService = investmentService;
     }
 
-    [HttpGet("{Id:int}")]
+    [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetInvestmentForecastsByClientId(int Id)
+    public IActionResult GetInvestmentForecastsById(int id)
     {
-        var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(Id);
-        return Ok(investmentForecasts);
+        var investmentForecast = _investmentService.GetInvestmentForecastsById(id);
+        return Ok(investmentForecast);
     }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetInvestmentForecasts([FromQuery] string? searchTerm)
+    public IActionResult GetInvestmentForecasts([FromQuery] GridQueryParamsDto queryParams)
     {
-        var investmentForecasts = _investmentService.GetInvestmentForecasts(searchTerm);
+        var investmentForecasts = _investmentService.GetInvestmentForecasts(queryParams);
         return Ok(investmentForecasts);
     }
+
+    //[HttpGet("{clientId:int}")]
+    //[ProducesResponseType(StatusCodes.Status200OK)]
+    //public IActionResult GetInvestmentForecastsByClientId([FromQuery] GridQueryParamsDto queryParams, int clientId)
+    //{
+    //    var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(queryParams, clientId);
+    //    return Ok(investmentForecasts);
+    //}
 }

@@ -25,6 +25,7 @@ builder.Services.AddSingleton<IClientService, ClientService>();
 
 builder.Services.AddSingleton<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddSingleton<IInvestmentService, InvestmentService>();
+builder.Services.AddSingleton<IInvestmentCalculationService, InvestmentCalculationService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

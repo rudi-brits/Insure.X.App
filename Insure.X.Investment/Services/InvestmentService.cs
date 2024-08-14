@@ -1,8 +1,8 @@
-﻿using Insure.X.Domain.Services;
+﻿using Insure.X.Domain.Models;
+using Insure.X.Domain.Services;
 using Insure.X.Investment.Enums;
 using Insure.X.Investment.Interfaces;
 using Insure.X.Investment.Models;
-using Insure.X.Resource.Database.Entities.Lookups;
 
 namespace Insure.X.Investment.Services;
 
@@ -15,44 +15,12 @@ public class InvestmentService : BaseService, IInvestmentService
         _investmentRepository = investmentRepository;
     }
 
-    public List<InvestmentForecastDto> GetInvestmentForecastsByClientId(int clientId)
-        => GetInvestmentForecasts(() => _investmentRepository.GetInvestmentForecastsByClientId(clientId) ?? new());
+    public InvestmentForecastDto? GetInvestmentForecastsById(int id)
+        => _investmentRepository.GetInvestmentForecastsById(id);
 
-    public List<InvestmentForecastDto> GetInvestmentForecasts(string? searchTerm)
-        => GetInvestmentForecasts(() => _investmentRepository.GetInvestmentForecasts(searchTerm));
+    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
+        => _investmentRepository.GetInvestmentForecasts(queryParams);
 
-    private List<InvestmentForecastDto> GetInvestmentForecasts(Func<List<InvestmentForecastDto>> getInvestmentForecasts)
-    {
-        var investmentForecasts = getInvestmentForecasts();
-        if (investmentForecasts?.Any() != true)
-            return new();
-
-        foreach(var forecast in investmentForecasts)
-            forecast.ForecastedAmount = CalculateForecastedAmount(forecast);
-
-        return investmentForecasts;
-    }
-
-    public decimal CalculateForecastedAmount(InvestmentForecastDto investment)
-    {
-        DateTime financialYearEndDate = DateTime.Now.AddDays(1);
-
-        var years        = (financialYearEndDate - investment.StartDate).Days / 365.25m;
-        var interestRate = investment.AnnualInterestRate / 100;
-
-        return (InterestTypeEnum)investment.InterestTypeId switch
-        {
-            InterestTypeEnum.Simple
-                => investment.LumpSum + (investment.LumpSum * interestRate * years),
-            InterestTypeEnum.CompoundedMonthly
-                => investment.LumpSum * CompoundInterestAccruedRate(interestRate, years, 12),
-            InterestTypeEnum.CompoundedAnnually
-                => investment.LumpSum * CompoundInterestAccruedRate(interestRate, years, 1),
-
-            _ => investment.LumpSum
-        };
-    }
-
-    private decimal CompoundInterestAccruedRate(decimal interestRate, decimal years, decimal compoundingPeriod)
-        => (decimal)Math.Pow((double)(1 + interestRate / compoundingPeriod), (double)(years * compoundingPeriod));
+    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int clientId)
+        => _investmentRepository.GetInvestmentForecastsByClientId(queryParams, clientId);
 }
