@@ -2,8 +2,14 @@
 
 namespace Insure.X.Resource.Database.Entities;
 
-public class BaseEntity
+/// <summary>
+/// BaseEntity
+/// </summary>
+public abstract class BaseEntity
 {
+    /// <summary>
+    /// Id
+    /// </summary>
     [Key]
     public int Id { get; set; }
 }

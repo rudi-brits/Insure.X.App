@@ -1,5 +1,8 @@
 ﻿namespace Insure.X.Investment.Enums;
 
+/// <summary>
+/// InterestTypeEnum
+/// </summary>
 public enum InterestTypeEnum
 {
     Simple             = 1,

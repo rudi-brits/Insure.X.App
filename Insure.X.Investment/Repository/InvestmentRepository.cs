@@ -7,10 +7,21 @@ using Insure.X.Resource.Database.Data;
 
 namespace Insure.X.Investment.Repository;
 
+/// <summary>
+/// InvestmentRepository interface extends <see cref=BaseRepository" /> implements <see cref="IInvestmentRepository" />
+/// </summary>
 public class InvestmentRepository : BaseRepository, IInvestmentRepository
 {
-    private readonly IInvestmentCalculationService _investmentCalculationService; 
+    /// <summary>
+    /// IInvestmentCalculationService field
+    /// </summary>
+    private readonly IInvestmentCalculationService _investmentCalculationService;
 
+    /// <summary>
+    /// InvestmentRepository constructor
+    /// </summary>
+    /// <param name="insureXDatabase"></param>
+    /// <param name="investmentCalculationService"></param>
     public InvestmentRepository(InsureXDatabase insureXDatabase,
         IInvestmentCalculationService investmentCalculationService)
         : base(insureXDatabase)
@@ -24,6 +35,11 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
         });
     }
 
+    /// <summary>
+    /// GetInvestmentForecastsById
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public InvestmentForecastDto? GetInvestmentForecastsById(int id)
     {
         var baseQueryable = GetInvestmentForecastQueryable(true);
@@ -31,12 +47,29 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
             .FirstOrDefault(forecast => forecast.Id == id);
     }
 
+    /// <summary>
+    /// GetInvestmentForecasts
+    /// </summary>
+    /// <param name="queryParams"></param>
+    /// <returns></returns>
     public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
         => GetPagedInvestmentForecastQueryable(queryParams);
 
+    /// <summary>
+    /// GetInvestmentForecastsByClientId
+    /// </summary>
+    /// <param name="queryParams"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id)
         => GetPagedInvestmentForecastQueryable(queryParams, clientId: id);
 
+    /// <summary>
+    /// GetPagedInvestmentForecastQueryable
+    /// </summary>
+    /// <param name="queryParams"></param>
+    /// <param name="clientId"></param>
+    /// <returns></returns>
     private PagedResultDto<List<InvestmentForecastDto>> GetPagedInvestmentForecastQueryable(
         GridQueryParamsDto queryParams, int? clientId = null)
     {
@@ -55,13 +88,14 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
             .PageByParams(queryParams.PageNumber, queryParams.PageSize)
             .ToList();
 
-        return new()
-        {
-            Data = data,
-            TotalRecords = totalRecords
-        };
+        return new(data ?? new(), totalRecords);
     }
 
+    /// <summary>
+    /// GetInvestmentForecastQueryable
+    /// </summary>
+    /// <param name="includeForecastedAmount"></param>
+    /// <returns></returns>
     private IQueryable<InvestmentForecastDto> GetInvestmentForecastQueryable(bool includeForecastedAmount)
     {
         var baseQueryable =

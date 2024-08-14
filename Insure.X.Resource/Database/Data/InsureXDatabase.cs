@@ -4,8 +4,14 @@ using Insure.X.Resource.Database.Entities.Lookups;
 
 namespace Insure.X.Resource.Database.Data;
 
+/// <summary>
+/// InsureXDatabase
+/// </summary>
 public class InsureXDatabase
 {
+    /// <summary>
+    /// _clients
+    /// </summary>
     private readonly static List<ClientEntity> _clients = new()
     {
         new ClientEntity { Id = 1, Firstname = "John", Surname = "Doe", IdNumber = "8001015009087" },
@@ -29,6 +35,9 @@ public class InsureXDatabase
         new ClientEntity { Id = 19, Firstname = "Benjamin", Surname = "Walker", IdNumber = "9901105006088" },
         new ClientEntity { Id = 20, Firstname = "Ava", Surname = "Hall", IdNumber = "9703140012083" }
     };
+    /// <summary>
+    /// _investments
+    /// </summary>
 
     private readonly static List<InvestmentEntity> _investments = new()
     {
@@ -483,6 +492,9 @@ public class InsureXDatabase
             InterestTypeId = 3
         }
     };
+    /// <summary>
+    /// _interestType
+    /// </summary>
 
     private readonly static List<InterestTypeEntity> _interestType = new()
     {
@@ -502,10 +514,17 @@ public class InsureXDatabase
             Description = "Compounded Annually"
         }
     };
-
+    
+    /// <summary>
+    /// Clients
+    /// </summary>
     public IQueryable<ClientEntity> Clients => _clients.AsQueryable();
-
+    /// <summary>
+    /// Investments
+    /// </summary>
     public IQueryable<InvestmentEntity> Investments => _investments.AsQueryable();
-
+    /// <summary>
+    /// InterestTypes
+    /// </summary>
     public IQueryable<InterestTypeEntity> InterestTypes => _interestType.AsQueryable();
 }

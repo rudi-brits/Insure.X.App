@@ -9,8 +9,15 @@ using System.Linq.Dynamic.Core;
 
 namespace Insure.X.Client.Repository;
 
+/// <summary>
+/// ClientRepository extends <see cref="BaseRepository" />, implements <see cref="IClientRepository" />
+/// </summary>
 public class ClientRepository : BaseRepository, IClientRepository
 {
+    /// <summary>
+    /// ClientRepository constructor
+    /// </summary>
+    /// <param name="insureXDatabase"></param>
     public ClientRepository(InsureXDatabase insureXDatabase) 
         : base(insureXDatabase)
     {
@@ -22,11 +29,21 @@ public class ClientRepository : BaseRepository, IClientRepository
         });
     }
 
+    /// <summary>
+    /// GetClientById
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public ClientDto? GetClientById(int id)
-        => _insureXDatabase.Clients.
-            Select(client => new ClientDto(client)).
-            FirstOrDefault(client => client.Id == id);
+        => _insureXDatabase.Clients
+            .Select(client => new ClientDto(client))
+            .FirstOrDefault(client => client.Id == id);
 
+    /// <summary>
+    /// GetClients
+    /// </summary>
+    /// <param name="queryParams"></param>
+    /// <returns></returns>
     public PagedResultDto<List<ClientDto>> GetClients(GridQueryParamsDto queryParams)
     {
         var filteredQuery = _insureXDatabase.Clients
@@ -39,10 +56,6 @@ public class ClientRepository : BaseRepository, IClientRepository
             .Select(client => new ClientDto(client))
             .ToList();
 
-        return new()
-        {
-            Data = data,
-            TotalRecords = totalRecords
-        };
+        return new(data ?? new(), totalRecords);
     } 
 }

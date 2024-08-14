@@ -2,8 +2,19 @@
 
 namespace Insure.X.Domain.Extensions;
 
+/// <summary>
+/// IQueryableExtensions class
+/// </summary>
 public static class IQueryableExtensions
 {
+    /// <summary>
+    /// FilterByParams
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="searchTerm"></param>
+    /// <param name="propertyNames"></param>
+    /// <returns></returns>
     public static IQueryable<T> FilterByParams<T>(this IQueryable<T> source, 
         string? searchTerm,
         string[] propertyNames)
@@ -29,6 +40,14 @@ public static class IQueryableExtensions
         return source;
     }
 
+    /// <summary>
+    /// OrderByParams
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="sortField"></param>
+    /// <param name="sortOrder"></param>
+    /// <returns></returns>
     public static IQueryable<T> OrderByParams<T>(this IQueryable<T> source,
         string? sortField,
         string? sortOrder)
@@ -38,7 +57,7 @@ public static class IQueryableExtensions
             if (string.IsNullOrEmpty(sortField))
                 return source;
 
-            sortField = char.ToUpper(sortField[0]) + sortField.Substring(1);
+            sortField = char.ToUpper(sortField[0]) + sortField[1..];
             sortOrder = (sortOrder ?? string.Empty).ToLower();
 
             string sortingExpression =
@@ -54,15 +73,32 @@ public static class IQueryableExtensions
         return source;
     }
 
+    /// <summary>
+    /// PageByParams
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="pageNumber"></param>
+    /// <param name="pageSize"></param>
+    /// <returns></returns>
     public static IQueryable<T> PageByParams<T>(this IQueryable<T> source,
         int pageNumber,
         int pageSize)
     {
-        pageNumber = pageNumber > 0 ? pageNumber : 1;
-        pageSize   = pageSize > 0 ? pageSize : 10;
+        try
+        {
+            pageNumber = pageNumber > 0 ? pageNumber : 1;
+            pageSize = pageSize > 0 ? pageSize : 10;
 
-        return source
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize);
+            return source
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine($"{nameof(PageByParams)}-{exc.Message}");
+        }
+
+        return source;
     }
 }

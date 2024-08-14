@@ -33,7 +33,7 @@ namespace Insure.X.Investment.Services
             };
         }       
 
-        private decimal CompoundInterestAccruedRate(decimal interestRate, decimal years, decimal compoundingPeriod)
+        private static decimal CompoundInterestAccruedRate(decimal interestRate, decimal years, decimal compoundingPeriod)
             => (decimal)Math.Pow((double)(1 + interestRate / compoundingPeriod), (double)(years * compoundingPeriod));
     }
 }
