@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Insure.X.Api.Controllers.Client;
 
-public class ClientController : InsureXController
+public class ClientsController : InsureXController
 {
     private readonly IClientService _clientService;
 
-    public ClientController(IClientService clientService)
+    public ClientsController(IClientService clientService)
     {
         _clientService = clientService;
     }

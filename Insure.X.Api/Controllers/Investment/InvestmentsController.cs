@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Insure.X.Api.Controllers.Investment;
 
-public class InvestmentController : InsureXController
+public class InvestmentsController : InsureXController
 {
     private readonly IInvestmentService _investmentService;
 
-    public InvestmentController(IInvestmentService investmentService)
+    public InvestmentsController(IInvestmentService investmentService)
     {
         _investmentService = investmentService;
     }

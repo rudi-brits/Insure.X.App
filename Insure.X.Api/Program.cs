@@ -1,3 +1,4 @@
+using Insure.X.Api.Utilities;
 using Insure.X.Client.Interfaces;
 using Insure.X.Client.Repository;
 using Insure.X.Client.Services;
@@ -6,6 +7,7 @@ using Insure.X.Investment.Interfaces;
 using Insure.X.Investment.Repository;
 using Insure.X.Investment.Services;
 using Insure.X.Resource.Database.Data;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,11 +29,15 @@ builder.Services.AddSingleton<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddSingleton<IInvestmentService, InvestmentService>();
 builder.Services.AddSingleton<IInvestmentCalculationService, InvestmentCalculationService>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new DecimalJsonConverter());
-    });
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(
+        new RouteTokenTransformerConvention(new SlugifyParameterTransformer()));
+})
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DecimalJsonConverter());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
