@@ -21,6 +21,6 @@ public class InvestmentService : BaseService, IInvestmentService
     public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
         => _investmentRepository.GetInvestmentForecasts(queryParams);
 
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int clientId)
-        => _investmentRepository.GetInvestmentForecastsByClientId(queryParams, clientId);
+    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id)
+        => _investmentRepository.GetInvestmentForecastsByClientId(queryParams, id);
 }

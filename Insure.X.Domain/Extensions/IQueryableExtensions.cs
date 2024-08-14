@@ -33,16 +33,25 @@ public static class IQueryableExtensions
         string? sortField,
         string? sortOrder)
     {
-        if (string.IsNullOrEmpty(sortField))
-            return source;
+        try
+        {
+            if (string.IsNullOrEmpty(sortField))
+                return source;
 
-        sortField = char.ToUpper(sortField[0]) + sortField.Substring(1);
-        sortOrder = (sortOrder ?? string.Empty).ToLower();
+            sortField = char.ToUpper(sortField[0]) + sortField.Substring(1);
+            sortOrder = (sortOrder ?? string.Empty).ToLower();
 
-        string sortingExpression = 
-            $"{sortField} {(sortOrder == "asc" ? "ascending" : "descending")}";
+            string sortingExpression =
+                $"{sortField} {(sortOrder == "asc" ? "ascending" : "descending")}";
 
-        return DynamicQueryableExtensions.OrderBy(source, sortingExpression);
+            return DynamicQueryableExtensions.OrderBy(source, sortingExpression);
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine($"{nameof(OrderByParams)}-{exc.Message}");
+        }
+
+        return source;
     }
 
     public static IQueryable<T> PageByParams<T>(this IQueryable<T> source,

@@ -7,5 +7,5 @@ public interface IInvestmentService
 {
     InvestmentForecastDto? GetInvestmentForecastsById(int id);
     PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams);
-    PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int clientId);
+    PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id);
 }

@@ -30,11 +30,11 @@ public class InvestmentController : InsureXController
         return Ok(investmentForecasts);
     }
 
-    //[HttpGet("{clientId:int}")]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //public IActionResult GetInvestmentForecastsByClientId([FromQuery] GridQueryParamsDto queryParams, int clientId)
-    //{
-    //    var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(queryParams, clientId);
-    //    return Ok(investmentForecasts);
-    //}
+    [HttpGet("clients/{id:int}/investments")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetInvestmentForecastsByClientId([FromQuery] GridQueryParamsDto queryParams, int id)
+    {
+        var investmentForecasts = _investmentService.GetInvestmentForecastsByClientId(queryParams, id);
+        return Ok(investmentForecasts);
+    }
 }

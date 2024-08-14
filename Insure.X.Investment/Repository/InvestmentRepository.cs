@@ -34,8 +34,8 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
         => GetPagedInvestmentForecastQueryable(queryParams);
 
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int clientId)
-        => GetPagedInvestmentForecastQueryable(queryParams, clientId: clientId);
+    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id)
+        => GetPagedInvestmentForecastQueryable(queryParams, clientId: id);
 
     private PagedResultDto<List<InvestmentForecastDto>> GetPagedInvestmentForecastQueryable(
         GridQueryParamsDto queryParams, int? clientId = null)
