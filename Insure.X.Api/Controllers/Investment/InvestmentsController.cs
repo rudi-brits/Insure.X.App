@@ -44,7 +44,7 @@ public class InvestmentsController : InsureXController
             var investmentForecast = _investmentService.GetInvestmentForecastsById(id);
             if (investmentForecast == null)
                 return NotFound();
-
+            
             return Ok(investmentForecast);
         }
         catch (Exception exc)
@@ -60,7 +60,7 @@ public class InvestmentsController : InsureXController
     /// <param name="queryParams"></param>
     /// <returns></returns>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetInvestmentForecasts([FromQuery] GridQueryParamsDto queryParams)
     {
@@ -83,7 +83,7 @@ public class InvestmentsController : InsureXController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("clients/{id:int}/investments")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetInvestmentForecastsByClientId([FromQuery] GridQueryParamsDto queryParams, int id)
     {
