@@ -30,8 +30,8 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
 
         SetFilterFields(new[]
         {
-            nameof(InvestmentForecastDto.Firstname),
-            nameof(InvestmentForecastDto.Surname)
+            nameof(InvestmentForecastResponseDto.Firstname),
+            nameof(InvestmentForecastResponseDto.Surname)
         });
     }
 
@@ -39,10 +39,11 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     /// GetInvestmentForecastsById
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="queryParams"></param>
     /// <returns></returns>
-    public InvestmentForecastDto? GetInvestmentForecastsById(int id)
+    public InvestmentForecastResponseDto? GetInvestmentForecastsById(int id, InvestmentGridQueryParamsDto queryParams)
     {
-        var baseQueryable = GetInvestmentForecastQueryable(true);
+        var baseQueryable = GetInvestmentForecastQueryable(queryParams.ForecastDate);
         return baseQueryable
             .FirstOrDefault(forecast => forecast.Id == id);
     }
@@ -52,7 +53,7 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     /// </summary>
     /// <param name="queryParams"></param>
     /// <returns></returns>
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
+    public PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
         => GetPagedInvestmentForecastQueryable(queryParams);
 
     /// <summary>
@@ -61,8 +62,9 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     /// <param name="queryParams"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id)
-        => GetPagedInvestmentForecastQueryable(queryParams, clientId: id);
+    public PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecastsByClientId(
+        InvestmentGridQueryParamsDto queryParams, int id)
+        => GetPagedInvestmentForecastQueryable(queryParams, id, queryParams.ForecastDate);
 
     /// <summary>
     /// GetPagedInvestmentForecastQueryable
@@ -70,10 +72,10 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     /// <param name="queryParams"></param>
     /// <param name="clientId"></param>
     /// <returns></returns>
-    private PagedResultDto<List<InvestmentForecastDto>> GetPagedInvestmentForecastQueryable(
-        GridQueryParamsDto queryParams, int? clientId = null)
+    private PagedResultDto<List<InvestmentForecastResponseDto>> GetPagedInvestmentForecastQueryable(
+        GridQueryParamsDto queryParams, int? clientId = null, DateTime? forecastDate = null)
     {
-        var baseQueryable = GetInvestmentForecastQueryable(clientId != null);
+        var baseQueryable = GetInvestmentForecastQueryable(forecastDate);
 
         if (clientId != null)
             baseQueryable = baseQueryable
@@ -94,9 +96,9 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
     /// <summary>
     /// GetInvestmentForecastQueryable
     /// </summary>
-    /// <param name="includeForecastedAmount"></param>
+    /// <param name="forecastDate"></param>
     /// <returns></returns>
-    private IQueryable<InvestmentForecastDto> GetInvestmentForecastQueryable(bool includeForecastedAmount)
+    private IQueryable<InvestmentForecastResponseDto> GetInvestmentForecastQueryable(DateTime? forecastDate = null)
     {
         var baseQueryable =
             from
@@ -109,7 +111,7 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
               interestType in _insureXDatabase.InterestTypes
             on
               investment.InterestTypeId equals interestType.Id
-            select new InvestmentForecastDto
+            select new InvestmentForecastResponseDto
             {
                 Id                 = investment.Id,
                 ClientId           = client.Id,
@@ -120,10 +122,9 @@ public class InvestmentRepository : BaseRepository, IInvestmentRepository
                 AnnualInterestRate = investment.AnnualInterestRate,
                 InterestTypeId     = investment.InterestTypeId,
                 InterestType       = interestType.Description,
-                ForecastedAmount =
-                    includeForecastedAmount
-                        ? _investmentCalculationService.CalculateForecastedAmount(investment)
-                        : 0
+                ForecastedAmount   = forecastDate != null
+                                       ? _investmentCalculationService.CalculateForecastedAmount(investment, forecastDate)
+                                       : investment.LumpSum
             };
 
         return baseQueryable;

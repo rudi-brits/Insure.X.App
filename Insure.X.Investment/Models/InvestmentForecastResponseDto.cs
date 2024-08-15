@@ -7,7 +7,7 @@ namespace Insure.X.Investment.Models;
 /// <summary>
 /// InvestmentForecastDto class extends <see cref="PersonDto" /> 
 /// </summary>
-public class InvestmentForecastDto : PersonDto
+public class InvestmentForecastResponseDto : PersonDto
 {
     /// <summary>
     /// Id

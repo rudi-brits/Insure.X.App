@@ -12,19 +12,20 @@ public interface IInvestmentRepository
     /// GetInvestmentForecastsById
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="queryParams"></param>
     /// <returns></returns>
-    InvestmentForecastDto? GetInvestmentForecastsById(int id);
+    InvestmentForecastResponseDto? GetInvestmentForecastsById(int id, InvestmentGridQueryParamsDto queryParams);
     /// <summary>
     /// GetInvestmentForecasts
     /// </summary>
     /// <param name="queryParams"></param>
     /// <returns></returns>
-    PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams);
+    PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams);
     /// <summary>
     /// GetInvestmentForecastsByClientId
     /// </summary>
     /// <param name="queryParams"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id);
+    PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecastsByClientId(InvestmentGridQueryParamsDto queryParams, int id);
 }

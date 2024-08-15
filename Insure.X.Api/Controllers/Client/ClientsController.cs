@@ -61,6 +61,7 @@ public class ClientsController : InsureXController
     /// <returns></returns>
     [HttpGet]
     [ProducesResponseType(typeof(PagedResultDto<List<ClientDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetClients([FromQuery] GridQueryParamsDto queryParams)
     {
         try

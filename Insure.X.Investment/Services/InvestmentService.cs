@@ -28,16 +28,17 @@ public class InvestmentService : BaseService, IInvestmentService
     /// GetInvestmentForecastsById
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="queryParams"></param>
     /// <returns></returns>
-    public InvestmentForecastDto? GetInvestmentForecastsById(int id)
-        => _investmentRepository.GetInvestmentForecastsById(id);
+    public InvestmentForecastResponseDto? GetInvestmentForecastsById(int id, InvestmentGridQueryParamsDto queryParams)
+        => _investmentRepository.GetInvestmentForecastsById(id, queryParams);
 
     /// <summary>
     /// GetInvestmentForecasts
     /// </summary>
     /// <param name="queryParams"></param>
     /// <returns></returns>
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
+    public PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecasts(GridQueryParamsDto queryParams)
         => _investmentRepository.GetInvestmentForecasts(queryParams);
 
     /// <summary>
@@ -46,6 +47,7 @@ public class InvestmentService : BaseService, IInvestmentService
     /// <param name="queryParams"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    public PagedResultDto<List<InvestmentForecastDto>> GetInvestmentForecastsByClientId(GridQueryParamsDto queryParams, int id)
+    public PagedResultDto<List<InvestmentForecastResponseDto>> GetInvestmentForecastsByClientId(
+        InvestmentGridQueryParamsDto queryParams, int id)
         => _investmentRepository.GetInvestmentForecastsByClientId(queryParams, id);
 }

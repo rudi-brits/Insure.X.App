@@ -31,17 +31,17 @@ public class InvestmentsController : InsureXController
     /// <summary>
     /// GetInvestmentForecastsById
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="requestDto"></param>
     /// <returns></returns>
-    [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(InvestmentForecastDto), StatusCodes.Status200OK)]
+    [HttpGet("{id:int}/forecasts")]
+    [ProducesResponseType(typeof(InvestmentForecastResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetInvestmentForecastsById(int id)
+    public IActionResult GetInvestmentForecastsById(int id, [FromQuery] InvestmentGridQueryParamsDto queryParams)
     {
         try
         {
-            var investmentForecast = _investmentService.GetInvestmentForecastsById(id);
+            var investmentForecast = _investmentService.GetInvestmentForecastsById(id, queryParams);
             if (investmentForecast == null)
                 return NotFound();
             
@@ -60,7 +60,7 @@ public class InvestmentsController : InsureXController
     /// <param name="queryParams"></param>
     /// <returns></returns>
     [HttpGet]
-    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastResponseDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult GetInvestmentForecasts([FromQuery] GridQueryParamsDto queryParams)
     {
@@ -83,9 +83,9 @@ public class InvestmentsController : InsureXController
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("clients/{id:int}/investments")]
-    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResultDto<List<InvestmentForecastResponseDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult GetInvestmentForecastsByClientId([FromQuery] GridQueryParamsDto queryParams, int id)
+    public IActionResult GetInvestmentForecastsByClientId([FromQuery] InvestmentGridQueryParamsDto queryParams, int id)
     {
         try
         {

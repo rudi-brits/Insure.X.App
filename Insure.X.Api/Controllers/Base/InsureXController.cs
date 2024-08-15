@@ -6,7 +6,7 @@ namespace Insure.X.Api.Controllers.Base;
 /// <summary>
 /// InsureXController extends <see cref="ControllerBase" />
 /// </summary>
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public abstract class InsureXController : ControllerBase
 {
